@@ -15,8 +15,6 @@ Icon
 # Thumbnails
 ._*
 
-。
-
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
@@ -76,7 +74,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-dist/
 
 # TypeScript v1 declaration files
 typings/
@@ -111,6 +108,9 @@ typings/
 
 # nuxt.js build output
 .nuxt
+
+# react / gatsby 
+public/
 
 # vuepress build output
 .vuepress/dist
