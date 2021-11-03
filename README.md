@@ -1,4 +1,4 @@
-# front
+# blog-api
 
 ## Project setup
 ```
