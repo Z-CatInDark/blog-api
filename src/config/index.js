@@ -8,9 +8,9 @@ const REDIS = {
 }
 const JWT_SECRET = 'a&*38QthAKuiRwISGLotgq^3%^$zvA3A6Hfr8MF$jM*HY4*dWcwAW&9NGp7*b53!'
 
-const BaseUrl = process.env.NODE_ENV === 'production' ? '8.135.32.181:8081' : 'http://localhost:8080'
+const BaseUrl = process.env.NODE_ENV === 'production' ? 'http://8.135.32.181:8081' : 'http://localhost:8080'
 
-const uploadPath = process.env.NODE_ENV === 'production' ? '/blog-api/public' : path.join(path.resolve(__dirname, '../../public'))
+const uploadPath = process.env.NODE_ENV === 'production' ? path.join(path.resolve(__dirname, '../public')) : path.join(path.resolve(__dirname, '../../public'))
 export default {
   DB_URL,
   REDIS,
