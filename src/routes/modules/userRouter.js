@@ -15,6 +15,9 @@ router.post('/basic', userController.updateUserInfo)
 // 修改密码
 router.post('/change-password', userController.changePassword)
 
+// 重置密码
+router.post('/reset-password', userController.resetPassword)
+
 // 收藏帖子
 router.get('/add-collect', userController.addCollect)
 

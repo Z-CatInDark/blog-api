@@ -7,7 +7,7 @@ import moment from 'dayjs'
 import uuid from 'uuid/v4'
 import jwt from 'jsonwebtoken'
 import config from '@/config/index.js'
-import { setValue, getValue } from '@/config/RedisConfig'
+import { setValue, getValue, delValue } from '@/config/RedisConfig'
 import { checkCode } from '@/common/Utils'
 import bcrypt from 'bcryptjs'
 
@@ -190,6 +190,32 @@ class UserController {
     }
   }
 
+  // 验证token是否有效
+  async validateToken (ctx) {
+    const body = ctx.query
+    const user = await User.findOne({ username: body.username })
+    if (user !== 'undefined' && user !== null) {
+      // const result = checkToken(user._doc._id, body.key)
+      const result = await getValue(user._doc._id.toString())
+      if (result === body.key) {
+        ctx.body = {
+          code: 200,
+          msg: '验证通过'
+        }
+      } else {
+        ctx.body = {
+          code: 401,
+          msg: '链接已过期，请重新发送邮件'
+        }
+      }
+    } else {
+      ctx.body = {
+        code: 401,
+        msg: '链接已过期，请重新发送邮件'
+      }
+    }
+  }
+
   // 重置密码
   async resetPassword (ctx) {
     const { body } = ctx.request
@@ -197,19 +223,28 @@ class UserController {
     const vercode = body.vercode
     const result = await checkCode(sid, vercode)
     if (result) {
-      if (body.key) {
-        const token = await getValue(body.key)
-        const obj = getJWTPayload('Bearer ' + token)
-
-        const password = await bcrypt.hash(body.password, 5)
-        await User.updateOne(
-          { _id: obj._id },
-          { $set: { password: password } }
-        )
+      const obj = await getJWTPayload(ctx.header.authorization)
+      const password = await bcrypt.hash(body.password, 5)
+      const result1 = await User.updateOne(
+        { _id: obj._id },
+        { $set: { password: password } }
+      )
+      await delValue(obj._id)
+      if (result1.ok === 1) {
         ctx.body = {
           code: 200,
           msg: '重置密码成功'
         }
+      } else {
+        ctx.body = {
+          code: 401,
+          msg: '重置密码失败，请联系管理员'
+        }
+      }
+    } else {
+      ctx.body = {
+        code: 401,
+        msg: '验证码错误'
       }
     }
   }

@@ -10,7 +10,7 @@ const getJWTPayload = token => {
 
 const checkCode = async (key, value) => {
   const redisData = await getValue(key)
-  if (redisData != null) {
+  if (redisData !== null && redisData !== 'undefined') {
     if (redisData.toLowerCase() === value.toLowerCase()) {
       return true
     } else {
@@ -20,6 +20,19 @@ const checkCode = async (key, value) => {
     return false
   }
 }
+
+// const checkToken = async (key, value) => {
+//   const redisData = await getValue(key)
+//   if (redisData !== null && redisData !== 'undefined') {
+//     if (redisData === value) {
+//       return true
+//     } else {
+//       return false
+//     }
+//   } else {
+//     return false
+//   }
+// }
 
 const getStats = (path) => {
   return new Promise((resolve) => {
@@ -65,6 +78,7 @@ const rename = (obj, key, newKey) => {
 
 export {
   checkCode,
+  // checkToken,
   getJWTPayload,
   dirExists,
   rename

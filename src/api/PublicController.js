@@ -14,7 +14,7 @@ class PublicController {
     })
     // 保存图片验证码数据，设置超时时间，单位: s
     // 设置图片验证码超时10分钟
-    setValue(body.sid, newCaptcha.text, 10 * 60)
+    await setValue(body.sid, newCaptcha.text, 10 * 60)
     ctx.body = {
       code: 200,
       data: newCaptcha.data

@@ -28,9 +28,6 @@ router.get('/topWeek', contentController.getTopWeek)
 // 确认修改邮箱
 router.get('/reset-email', userController.updateUsername)
 
-// 重置密码
-router.post('/reset-password', userController.resetPassword)
-
 // 获取文章详情
 router.get('/content/detail', contentController.getPostDetail)
 
@@ -45,5 +42,8 @@ router.get('/latest-post', contentController.getPostPublic)
 
 // 获取用户最近评论纪录
 router.get('/latest-comments', commentsController.getCommentsPublic)
+
+// 验证token是否过期
+router.get('/validate-token', userController.validateToken)
 
 export default router

@@ -1,6 +1,4 @@
 import send from '@/config/MailConfig'
-import { setValue } from '@/config/RedisConfig'
-import uuid from 'uuid/v4'
 import bcrypt from 'bcryptjs'
 import moment from 'dayjs'
 import jsonwebtoken from 'jsonwebtoken'
@@ -8,6 +6,7 @@ import config from '@/config'
 import SignRecord from '@/model/SignRecord'
 import { checkCode } from '@/common/Utils'
 import User from '@/model/User'
+import { setValue } from '@/config/RedisConfig'
 
 class LoginController {
   async forget (ctx) {
@@ -18,10 +17,10 @@ class LoginController {
     if (result) {
       const user = await User.findOne({ username: body.username })
       if (user && user !== 'undefined') {
-        const key = uuid()
-        setValue(key, jsonwebtoken.sign({ _id: user._doc._id }, config.JWT_SECRET, {
+        const token = jsonwebtoken.sign({ _id: user._doc._id.toString() }, config.JWT_SECRET, {
           expiresIn: '30M'
-        }))
+        })
+        await setValue(user._doc._id.toString(), token, 30 * 60)
         const result = await send({
           type: 'reset',
           email: body.username,
@@ -30,7 +29,7 @@ class LoginController {
             .add(30, 'minutes')
             .format('YYYY-MM-DD HH:mm:ss'),
           data: {
-            key: key,
+            key: token,
             username: body.username
           }
         })
